@@ -1,0 +1,401 @@
+Project Study Proposal: Luxe System Stock Management App
+
+Objective:
+Develop an offline-first stock management application for a small-to-medium scale retailer managing diverse inventory, including electronics and fashion items. The app will serve two main user roles: Admin (shopkeeper) and Employee.
+
+
+
+Context Overview:
+Luxe System is a stock management system built to help shopkeepers better organize, track, and monitor their inventory across different departments. The app is designed to work fully offline to accommodate environments with limited or inconsistent internet connectivity.
+
+
+
+Target Users:
+
+
+
+
+
+Admin (Shopkeeper): Manages products, categories, purchases from warehouse, employees, and reports. Records stock intake and controls inventory.
+
+
+
+Employee: Handles product sales and stock movement (in/out).
+
+
+
+Core Functional Areas:
+
+
+
+
+
+Department Selection
+
+
+
+
+
+After login, users select the department they’re working in (e.g., Electronics, Fashion).
+
+
+
+All data shown afterward (products, categories, sales, reports) is scoped to the selected department.
+
+
+
+Product Management
+
+
+
+
+
+Admin can add new products with image, name, price, initial stock, and assign them to a dynamic sub-category under the selected department.
+
+
+
+Each product has a unique code (e.g., PHC001 for Phone Cases, WIG001 for Wigs).
+
+
+
+Category System
+
+
+
+
+
+Two-level category structure:
+
+
+
+
+
+Main Categories / Departments (e.g., Electronics, Fashion)
+
+
+
+Sub-Categories (e.g., Cameras, Phone Cases under Electronics; Wigs, Dresses under Fashion)
+
+
+
+Both Main Categories and Sub-Categories are dynamic and manageable by Admin.
+
+
+
+Purchase Recording (Warehouse Intake)
+
+
+
+
+
+Admin records purchases made from the warehouse or supplier.
+
+
+
+Each purchase includes supplier name (optional), product, quantity received, unit cost, and timestamp.
+
+
+
+Total cost per line is auto-calculated (e.g., 20 units × 1000 RWF = 20,000 RWF).
+
+
+
+If a product is purchased again at a new unit price, it's tracked as a separate purchase entry for history.
+
+
+
+Sales Recording
+
+
+
+
+
+Employees record product sales, select item and quantity.
+
+
+
+Sale records include image, name, unit price, quantity sold, and timestamp.
+
+
+
+System adjusts available stock based on the sale.
+
+
+
+Stock Movement Tracking
+
+
+
+
+
+Employees can record stock in/out.
+
+
+
+Admin can also record movement from warehouse.
+
+
+
+Movements are timestamped and linked to user.
+
+
+
+Employee Account Management
+
+
+
+
+
+Admin creates, updates, and deletes employee accounts.
+
+
+
+Assigns roles/permissions (e.g., can sell only, can do stock-in).
+
+
+
+Actions by employees are logged and attributed for accountability.
+
+
+
+Reporting (Admin Only)
+
+
+
+
+
+Weekly and monthly summaries:
+
+
+
+
+
+Total sales
+
+
+
+Sales by department and sub-category
+
+
+
+Low stock alerts
+
+
+
+Top-selling items
+
+
+
+Purchase history and spending
+
+
+
+Option to export reports to PDF/CSV.
+
+
+
+UI and Navigation Flow (All Screens and Links):
+
+Shared Components:
+
+
+
+
+
+Sidebar: Navigation (Dashboard, Products, Categories, Purchases, Sales, Stock Movement, Reports, Employees)
+
+
+
+Topbar: Quick Search, Notifications, Profile Settings
+
+
+
+Department Selector (after login)
+
+Screens and Their Links:
+
+
+
+
+
+Department Selection (Post-login)
+
+
+
+
+
+Displays all Main Categories (Departments)
+
+
+
+Select to enter department-specific dashboard
+
+
+
+Dashboard (Admin/Employee view varies)
+
+
+
+
+
+Quick stats (total products, sales today, purchases this week, etc.)
+
+
+
+Links to reports, recent activity
+
+
+
+Product Management
+
+
+
+
+
+List products (with filters: sub-category, department scoped)
+
+
+
+Add/Edit Product (Form: name, code, category, price, stock, image)
+
+
+
+Category Management
+
+
+
+
+
+Department-specific Main and Sub-Categories (Add/Edit/Delete)
+
+
+
+Purchase Management
+
+
+
+
+
+View purchase history
+
+
+
+Record new purchase (Form: product, quantity, price/unit, total auto-calc)
+
+
+
+Sales Management
+
+
+
+
+
+List sales made in current department
+
+
+
+New Sale (Form: select product, enter quantity – show stock available)
+
+
+
+Stock Movement
+
+
+
+
+
+Record stock in/out (Form: product, quantity, type [in/out], reason)
+
+
+
+View movement logs
+
+
+
+Reports
+
+
+
+
+
+Summary report screen with charts and filters by department
+
+
+
+Export options (PDF, CSV)
+
+
+
+Employees (Admin only)
+
+
+
+
+
+List of employees
+
+
+
+Add/Edit employee (Form: name, email/username, role, permissions)
+
+
+
+Link all actions in system to user logs
+
+
+
+Design Approach:
+
+
+
+
+
+Clean, modern layout with logical grouping of actions
+
+
+
+Sidebar + Topbar layout
+
+
+
+Drawer modals for forms
+
+
+
+Cards for product summaries, tables for listing
+
+
+
+Pagination for long lists
+
+
+
+Visual cues for low stock, top sellers
+
+
+
+Department-aware UI to simplify navigation
+
+UI Refinement for Enterprise Look:
+
+
+
+
+
+Layout: Sidebar for main sections, topbar for search/quick actions.
+
+
+
+Cards & Tables: Product cards with image, price, stock. Tables with sticky headers, pagination, and filters.
+
+
+
+Forms: Drawer modals with validation for adding/editing items.
+
+
+
+Color & Typography: Soft colors, clear font hierarchy, alert statuses.
+
+
+
+Charts: Line, bar, and pie charts for reports.
