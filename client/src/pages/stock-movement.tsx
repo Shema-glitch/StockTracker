@@ -28,6 +28,10 @@ import { format } from "date-fns";
 export default function StockMovement() {
   const [modalOpen, setModalOpen] = useState(false);
   const { selectedDepartmentId } = useAuthStore();
+  
+  const breadcrumbs = [
+    { label: "Stock Movement" }
+  ];
 
   const { data: movements = [], isLoading } = useQuery({
     queryKey: ['/api/stock-movements', selectedDepartmentId],
@@ -92,7 +96,7 @@ export default function StockMovement() {
     .reduce((sum: number, m: any) => sum + m.quantity, 0);
 
   return (
-    <MainLayout title="Stock Movement">
+    <MainLayout title="Stock Movement" breadcrumbs={breadcrumbs}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

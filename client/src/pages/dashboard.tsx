@@ -8,47 +8,67 @@ export default function Dashboard() {
       <div className="space-y-6">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
+          <Card className="metric-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Package className="h-4 w-4 text-blue-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Active products in stock</p>
+              <div className="text-2xl font-bold text-gray-900">0</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className="text-green-600 text-xs font-medium mr-1">+0%</span>
+                Active products in stock
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="metric-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Sales Today</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <DollarSign className="h-4 w-4 text-green-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">Revenue from today's sales</p>
+              <div className="text-2xl font-bold text-gray-900">$0</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className="text-green-600 text-xs font-medium mr-1">+0%</span>
+                Revenue from today's sales
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="metric-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Purchases This Week</CardTitle>
-              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <ShoppingCart className="h-4 w-4 text-purple-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-xs text-muted-foreground">Total purchase costs</p>
+              <div className="text-2xl font-bold text-gray-900">$0</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className="text-gray-600 text-xs font-medium mr-1">+0%</span>
+                Total purchase costs
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="metric-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
-              <TrendingDown className="h-4 w-4 text-muted-foreground" />
+              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <TrendingDown className="h-4 w-4 text-red-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Items below minimum stock</p>
+              <div className="text-2xl font-bold text-gray-900">0</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className="text-red-600 text-xs font-medium mr-1">Alert</span>
+                Items below minimum stock
+              </p>
             </CardContent>
           </Card>
         </div>

@@ -68,16 +68,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <Card className="w-full max-w-md mx-4 bounce-in shadow-2xl border-0">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Box className="text-white text-xl" />
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Box className="text-white text-xl animate-pulse" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Luxe System</CardTitle>
-          <CardDescription>Stock Management System</CardDescription>
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Luxe System
+          </CardTitle>
+          <CardDescription className="text-gray-600">Stock Management System</CardDescription>
         </CardHeader>
         
         <CardContent>
