@@ -77,12 +77,14 @@ export function CategoryModal({ open, onOpenChange }: CategoryModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            Add New Category
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
             <FormField
               control={form.control}
               name="name"
@@ -100,19 +102,28 @@ export function CategoryModal({ open, onOpenChange }: CategoryModalProps) {
               )}
             />
 
-            <div className="flex justify-end space-x-2 pt-4">
+            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={() => onOpenChange(false)}
+                className="hover:scale-105 transition-transform duration-200"
               >
                 Cancel
               </Button>
               <Button 
                 type="submit" 
                 disabled={mutation.isPending}
+                className="bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200"
               >
-                {mutation.isPending ? "Creating..." : "Create Category"}
+                {mutation.isPending ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Creating...</span>
+                  </div>
+                ) : (
+                  "Create Category"
+                )}
               </Button>
             </div>
           </form>

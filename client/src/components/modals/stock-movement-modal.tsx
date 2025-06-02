@@ -127,16 +127,18 @@ export function StockMovementModal({ open, onOpenChange }: StockMovementModalPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-screen overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Record Stock Movement</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            Record Stock Movement
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Track physical inventory changes not tied to purchases or sales
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -261,20 +263,28 @@ export function StockMovementModal({ open, onOpenChange }: StockMovementModalPro
               )}
             />
 
-            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-100">
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={() => onOpenChange(false)}
+                className="hover:scale-105 transition-transform duration-200"
               >
                 Cancel
               </Button>
               <Button 
                 type="submit" 
                 disabled={mutation.isPending}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200"
               >
-                {mutation.isPending ? "Recording..." : "Record Movement"}
+                {mutation.isPending ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Recording...</span>
+                  </div>
+                ) : (
+                  "Record Movement"
+                )}
               </Button>
             </div>
           </form>

@@ -34,7 +34,7 @@ export function MainLayout({ children, title, breadcrumbs = [] }: MainLayoutProp
   }, [isAuthenticated, selectedDepartmentId, setLocation]);
 
   if (!isAuthenticated || !selectedDepartmentId) {
-    return null;
+    return <Redirect to="/login" />;
   }
 
   return (
