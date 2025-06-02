@@ -25,6 +25,7 @@ export const departments = pgTable("departments", {
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  code: text("code").notNull().unique(), // Dynamic code like PHC, CAM, WIG
   departmentId: integer("department_id").references(() => departments.id),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
@@ -33,10 +34,11 @@ export const categories = pgTable("categories", {
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  code: text("code").notNull().unique(),
+  code: text("code").notNull().unique(), // Dynamic code like PHC001, CAM001
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  stock: integer("stock").default(0),
-  imageUrl: text("image_url"),
+  stockQuantity: integer("stock_quantity").default(0),
+  minStockLevel: integer("min_stock_level").default(0),
+  image: text("image"),
   departmentId: integer("department_id").references(() => departments.id),
   categoryId: integer("category_id").references(() => categories.id),
   isActive: boolean("is_active").default(true),
