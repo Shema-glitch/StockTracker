@@ -1,7 +1,8 @@
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { useAuthStore } from "@/lib/auth";
-import { Navigate } from "wouter";
+import { useLocation } from "wouter";
+import { useEffect } from "react";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -10,13 +11,22 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, title }: MainLayoutProps) {
   const { isAuthenticated, selectedDepartmentId } = useAuthStore();
+  const [, setLocation] = useLocation();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setLocation("/login");
+      return;
+    }
 
-  if (!selectedDepartmentId) {
-    return <Navigate to="/department-selection" />;
+    if (!selectedDepartmentId) {
+      setLocation("/department-selection");
+      return;
+    }
+  }, [isAuthenticated, selectedDepartmentId, setLocation]);
+
+  if (!isAuthenticated || !selectedDepartmentId) {
+    return null;
   }
 
   return (
