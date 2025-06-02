@@ -1,20 +1,24 @@
-
 import { storage } from "./storage";
 
 async function seedData() {
   try {
     console.log("Starting to seed data...");
 
-    // Create a sample user
-    const user = await storage.createUser({
-      username: "admin",
-      password: "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "admin123"
-      name: "Admin User",
-      role: "admin",
-      permissions: ["all"],
-      isActive: true
-    });
-    console.log("Created user:", user.username);
+    // Check if admin user exists, if not create it
+    let adminUser = await storage.getUserByUsername("admin");
+    if (!adminUser) {
+      adminUser = await storage.createUser({
+        username: "admin",
+        password": "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "admin123"
+        name: "Admin User",
+        role: "admin",
+        permissions: ["all"],
+        isActive: true
+      });
+      console.log("Created admin user:", adminUser.username);
+    } else {
+      console.log("Admin user already exists:", adminUser.username);
+    }
 
     // Create departments
     const electronics = await storage.createDepartment({

@@ -24,6 +24,9 @@ export default function Categories() {
           ...getAuthHeader(),
         },
       });
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
       const data = await response.json();
       return Array.isArray(data) ? data : [];
     },
@@ -38,6 +41,9 @@ export default function Categories() {
           ...getAuthHeader(),
         },
       });
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
       const data = await response.json();
       return Array.isArray(data) ? data : [];
     },

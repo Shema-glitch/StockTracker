@@ -1,9 +1,20 @@
 import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Package, ShoppingCart, AlertTriangle, DollarSign } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { MainLayout } from "@/components/layout/main-layout";
+import { useAuthStore, getAuthHeader } from "@/lib/auth";
+import { 
+  Package, 
+  ShoppingCart, 
+  DollarSign, 
+  Users, 
+  TrendingUp, 
+  TrendingDown,
+  AlertTriangle,
+  BarChart3 
+} from "lucide-react";
 
 export default function Dashboard() {
   const selectedDepartmentId = 1;
