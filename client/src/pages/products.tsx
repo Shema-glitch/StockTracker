@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProductModal } from "@/components/modals/product-modal";
-import { useAuthStore } from "@/lib/auth";
+import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { Plus, Package, Search, AlertTriangle } from "lucide-react";
 
 export default function Products() {
@@ -27,9 +27,13 @@ export default function Products() {
   ];
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ['/api/products', selectedDepartmentId],
+    queryKey: ["products", selectedDepartmentId],
     queryFn: async () => {
-      const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`);
+      const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`, {
+        headers: {
+          ...getAuthHeader(),
+        },
+      });
       return response.json();
     },
     enabled: !!selectedDepartmentId,

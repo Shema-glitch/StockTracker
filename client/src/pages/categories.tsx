@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CategoryModal } from "@/components/modals/category-modal";
-import { useAuthStore } from "@/lib/auth";
+import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { Plus, Tag } from "lucide-react";
 
 export default function Categories() {
@@ -19,7 +19,11 @@ export default function Categories() {
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['/api/categories', selectedDepartmentId],
     queryFn: async () => {
-      const response = await fetch(`/api/categories?departmentId=${selectedDepartmentId}`);
+      const response = await fetch(`/api/categories?departmentId=${selectedDepartmentId}`, {
+        headers: {
+          ...getAuthHeader(),
+        },
+      });
       const data = await response.json();
       return Array.isArray(data) ? data : [];
     },
@@ -29,7 +33,11 @@ export default function Categories() {
   const { data: products = [] } = useQuery({
     queryKey: ['/api/products', selectedDepartmentId],
     queryFn: async () => {
-      const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`);
+      const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`, {
+        headers: {
+          ...getAuthHeader(),
+        },
+      });
       const data = await response.json();
       return Array.isArray(data) ? data : [];
     },
@@ -152,7 +160,7 @@ export default function Categories() {
                 </CardContent>
               </Card>
             ))}
-            
+
             {categories.length === 0 && (
               <Card className="col-span-full">
                 <CardContent className="flex flex-col items-center justify-center py-12">

@@ -1,8 +1,27 @@
+import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, DollarSign, ShoppingCart, TrendingDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, Package, ShoppingCart, AlertTriangle, DollarSign } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
+  const selectedDepartmentId = 1;
+
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["dashboard-stats", selectedDepartmentId],
+    queryFn: async () => {
+      const response = await fetch(`/api/dashboard/stats?departmentId=${selectedDepartmentId}`, {
+        headers: {
+          ...getAuthHeader(),
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch stats");
+      return response.json();
+    },
+    enabled: !!selectedDepartmentId,
+  });
+
   return (
     <MainLayout title="Dashboard">
       <div className="space-y-6">
