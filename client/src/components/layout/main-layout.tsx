@@ -4,6 +4,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { useAuthStore } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
+import { Redirect } from "wouter";
 
 interface BreadcrumbItem {
   label: string;

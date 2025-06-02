@@ -35,10 +35,10 @@ export default function Products() {
     enabled: !!selectedDepartmentId,
   });
 
-  const filteredProducts = products.filter((product: any) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredProducts = Array.isArray(products) ? products.filter((product: any) =>
+    product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.code?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
 
   return (
     <MainLayout title="Products" breadcrumbs={breadcrumbs}>
