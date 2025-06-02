@@ -51,10 +51,75 @@ export default function Products() {
               Manage your product inventory with dynamic codes
             </p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>
+          <Button onClick={() => setModalOpen(true)} className="bg-blue-600 hover:bg-blue-700">
             <Plus className="mr-2 h-4 w-4" />
             Add Product
           </Button>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Products</p>
+                  <p className="text-2xl font-bold">{filteredProducts.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Package className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">In Stock</p>
+                  <p className="text-2xl font-bold">
+                    {filteredProducts.filter((p: any) => p.stockQuantity > 10).length}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Package className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Low Stock</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {filteredProducts.filter((p: any) => p.stockQuantity <= (p.minStockLevel || 0)).length}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="h-6 w-6 text-red-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Today</p>
+                  <p className="text-2xl font-bold">
+                    {filteredProducts.filter((p: any) => p.stockQuantity > 0).length}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Package className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search */}

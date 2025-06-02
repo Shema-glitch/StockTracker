@@ -20,10 +20,25 @@ export default function Categories() {
     queryKey: ['/api/categories', selectedDepartmentId],
     queryFn: async () => {
       const response = await fetch(`/api/categories?departmentId=${selectedDepartmentId}`);
-      return response.json();
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
     },
     enabled: !!selectedDepartmentId,
   });
+
+  const { data: products = [] } = useQuery({
+    queryKey: ['/api/products', selectedDepartmentId],
+    queryFn: async () => {
+      const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`);
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!selectedDepartmentId,
+  });
+
+  const totalProducts = products.length;
+  const mainCategories = categories.filter((cat: any) => !cat.parentId);
+  const subCategories = categories.filter((cat: any) => cat.parentId);
 
   return (
     <MainLayout title="Categories" breadcrumbs={breadcrumbs}>
@@ -33,13 +48,72 @@ export default function Categories() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
             <p className="text-muted-foreground">
-              Manage sub-categories for your department
+              Organize your products with categories and sub-categories
             </p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>
+          <Button onClick={() => setModalOpen(true)} className="bg-blue-600 hover:bg-blue-700">
             <Plus className="mr-2 h-4 w-4" />
             Add Category
           </Button>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Main Categories</p>
+                  <p className="text-2xl font-bold">{mainCategories.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Tag className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Sub-Categories</p>
+                  <p className="text-2xl font-bold">{subCategories.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Tag className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Products</p>
+                  <p className="text-2xl font-bold">{totalProducts}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Tag className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Today</p>
+                  <p className="text-2xl font-bold">{categories.length > 0 ? 1 : 0}</p>
+                </div>
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Tag className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Categories Grid */}

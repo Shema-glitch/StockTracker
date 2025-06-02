@@ -65,7 +65,8 @@ export function ProductModal({ open, onOpenChange }: ProductModalProps) {
     queryKey: ['/api/categories', selectedDepartmentId],
     queryFn: async () => {
       const response = await fetch(`/api/categories?departmentId=${selectedDepartmentId}`);
-      return response.json();
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
     },
     enabled: !!selectedDepartmentId,
   });
@@ -101,15 +102,15 @@ export function ProductModal({ open, onOpenChange }: ProductModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto animate-scale-in">
         <DialogHeader className="pb-4">
-          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
             Add New Product
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 animate-fade-in-up">
             <FormField
               control={form.control}
               name="name"
@@ -117,7 +118,11 @@ export function ProductModal({ open, onOpenChange }: ProductModalProps) {
                 <FormItem>
                   <FormLabel>Product Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter product name" {...field} />
+                    <Input 
+                      placeholder="Enter product name" 
+                      className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +142,7 @@ export function ProductModal({ open, onOpenChange }: ProductModalProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((category: any) => (
+                      {Array.isArray(categories) && categories.map((category: any) => (
                         <SelectItem key={category.id} value={category.id.toString()}>
                           {category.name}
                         </SelectItem>
@@ -225,14 +230,14 @@ export function ProductModal({ open, onOpenChange }: ProductModalProps) {
                 type="button" 
                 variant="outline" 
                 onClick={() => onOpenChange(false)}
-                className="hover:scale-105 transition-transform duration-200"
+                className="hover:scale-105 transition-all duration-200 hover:shadow-md"
               >
                 Cancel
               </Button>
               <Button 
                 type="submit" 
                 disabled={mutation.isPending}
-                className="bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200"
+                className="bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all duration-200 hover:shadow-lg"
               >
                 {mutation.isPending ? (
                   <div className="flex items-center space-x-2">
