@@ -71,11 +71,6 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
@@ -189,7 +184,7 @@ export class DatabaseStorage implements IStorage {
 
   async updateProductStock(id: number, quantity: number): Promise<Product> {
     const [product] = await db.update(products)
-      .set({ stock: quantity })
+      .set({ stockQuantity: quantity })
       .where(eq(products.id, id))
       .returning();
     return product;
