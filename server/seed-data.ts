@@ -9,7 +9,7 @@ async function seedData() {
     if (!adminUser) {
       adminUser = await storage.createUser({
         username: "admin",
-        password": "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "admin123"
+        password: "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "admin123"
         name: "Admin User",
         role: "admin",
         permissions: ["all"],
@@ -65,8 +65,8 @@ async function seedData() {
       code: "IPH15P",
       categoryId: phones.id,
       departmentId: electronics.id,
-      unitPrice: "999.99",
-      stock: 50,
+      price: "999.99",
+      stockQuantity: 50,
       minStockLevel: 10,
       isActive: true
     });
@@ -76,8 +76,8 @@ async function seedData() {
       code: "MBA-M3",
       categoryId: laptops.id,
       departmentId: electronics.id,
-      unitPrice: "1299.99",
-      stock: 25,
+      price: "1299.99",
+      stockQuantity: 25,
       minStockLevel: 5,
       isActive: true
     });
@@ -87,8 +87,8 @@ async function seedData() {
       code: "CTSH001",
       categoryId: shirts.id,
       departmentId: clothing.id,
-      unitPrice: "29.99",
-      stock: 100,
+      price: "29.99",
+      stockQuantity: 100,
       minStockLevel: 20,
       isActive: true
     });

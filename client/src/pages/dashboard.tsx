@@ -3,8 +3,6 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import { MainLayout } from "@/components/layout/main-layout";
-import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { 
   Package, 
   ShoppingCart, 
