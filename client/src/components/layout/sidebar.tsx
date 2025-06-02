@@ -81,15 +81,20 @@ export function Sidebar() {
           
           return (
             <Link key={item.path} href={item.path}>
-              <a className={`flex items-center px-4 py-3 rounded-lg font-medium transition-colors ${
+              <a className={`nav-item flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                 isActive 
                   ? isStockMovement
-                    ? "text-orange-600 bg-orange-50 border-l-4 border-orange-600"
-                    : "text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:bg-gray-50"
+                    ? "text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border-l-4 border-orange-600 shadow-sm"
+                    : "text-blue-600 bg-gradient-to-r from-blue-50 to-blue-100 shadow-sm"
+                  : "text-gray-600 hover:bg-gray-50 hover:translate-x-1"
               }`}>
-                <Icon className="w-5 h-5 mr-3" />
-                {item.label}
+                <Icon className={`w-5 h-5 mr-3 transition-transform duration-300 ${
+                  isActive ? "scale-110" : "group-hover:scale-105"
+                }`} />
+                <span className="transition-all duration-300">{item.label}</span>
+                {isActive && (
+                  <div className="ml-auto w-2 h-2 bg-current rounded-full animate-pulse"></div>
+                )}
               </a>
             </Link>
           );
