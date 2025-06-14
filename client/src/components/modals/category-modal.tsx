@@ -1,32 +1,21 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthStore } from "@/lib/auth";
-import { apiRequest } from "@/lib/queryClient";
+import { z } from "zod";
+import { useAuthStore, getAuthHeader } from "@/lib/auth";
 
 const categorySchema = z.object({
-  name: z.string().min(1, "Category name is required"),
+  name: z.string().min(1, "Name is required"),
+  code: z.string().min(1, "Code is required"),
+  description: z.string().optional(),
 });
 
-type CategoryForm = z.infer<typeof categorySchema>;
+type CategoryFormValues = z.infer<typeof categorySchema>;
 
 interface CategoryModalProps {
   open: boolean;
@@ -38,92 +27,115 @@ export function CategoryModal({ open, onOpenChange }: CategoryModalProps) {
   const queryClient = useQueryClient();
   const { selectedDepartmentId } = useAuthStore();
 
-  const form = useForm<CategoryForm>({
+  const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: "",
+      code: "",
+      description: "",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: CategoryForm) => {
-      return apiRequest("POST", "/api/categories", {
-        ...data,
-        departmentId: selectedDepartmentId,
+    mutationFn: async (data: CategoryFormValues) => {
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({
+          ...data,
+          departmentId: selectedDepartmentId,
+        }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to create category");
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       toast({
         title: "Success",
         description: "Category created successfully",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       form.reset();
       onOpenChange(false);
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
-        description: "Failed to create category",
+        description: error.message || "Failed to create category",
         variant: "destructive",
       });
     },
   });
 
-  const onSubmit = (data: CategoryForm) => {
+  const onSubmit = (data: CategoryFormValues) => {
     mutation.mutate(data);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            Add New Category
-          </DialogTitle>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add New Category</DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category Name</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter category name" 
-                      {...field}
-                    />
+                    <Input placeholder="Enter category name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">
-              <Button 
-                type="button" 
-                variant="outline" 
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Code</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter category code" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter category description" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="hover:scale-105 transition-transform duration-200"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
-                disabled={mutation.isPending}
-                className="bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-200"
-              >
-                {mutation.isPending ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Creating...</span>
-                  </div>
-                ) : (
-                  "Create Category"
-                )}
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? "Creating..." : "Create Category"}
               </Button>
             </div>
           </form>

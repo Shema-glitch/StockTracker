@@ -7,6 +7,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sum, count } from "drizzle-orm";
+import { format } from "date-fns";
 
 export interface IStorage {
   // Users
@@ -57,6 +58,7 @@ export interface IStorage {
 
   // Reports
   getDashboardStats(departmentId?: number): Promise<any>;
+  getDashboardChartData(departmentId?: number, startDate?: Date, endDate?: Date): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -115,9 +117,9 @@ export class DatabaseStorage implements IStorage {
 
   // Categories
   async getCategories(departmentId?: number): Promise<Category[]> {
-    const query = db.select().from(categories).where(eq(categories.isActive, true));
+    let query = db.select().from(categories).where(eq(categories.isActive, true));
     if (departmentId) {
-      return await query.where(and(eq(categories.isActive, true), eq(categories.departmentId, departmentId)));
+      query = query.where(eq(categories.departmentId, departmentId));
     }
     return await query;
   }
@@ -249,13 +251,87 @@ export class DatabaseStorage implements IStorage {
 
   // Reports
   async getDashboardStats(departmentId?: number): Promise<any> {
-    // This would implement various dashboard statistics
-    // For now, returning a basic structure
+    // Get all products for the department
+    const products = await this.getProducts(departmentId);
+    
+    // Get today's sales
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const sales = await this.getSales(departmentId);
+    const todaySales = sales
+      .filter(sale => new Date(sale.createdAt) >= today)
+      .reduce((sum, sale) => sum + Number(sale.totalPrice), 0);
+
+    // Get this week's purchases
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const purchases = await this.getPurchases(departmentId);
+    const weekPurchases = purchases
+      .filter(purchase => new Date(purchase.createdAt) >= weekAgo)
+      .reduce((sum, purchase) => sum + Number(purchase.totalCost), 0);
+
+    // Count low stock items - check if quantity is less than or equal to minStockLevel
+    const lowStockItems = products.filter(product => 
+      (product.quantity || 0) <= (product.minStockLevel || 10) // Default to 10 if minStockLevel is not set
+    ).length;
+
     return {
-      totalProducts: 0,
-      totalSales: 0,
-      totalPurchases: 0,
-      lowStockItems: 0,
+      totalProducts: products.length,
+      todaySales,
+      weekPurchases,
+      lowStockItems,
+    };
+  }
+
+  async getDashboardChartData(departmentId?: number, startDate?: Date, endDate?: Date): Promise<any> {
+    // Get sales and purchases for the department
+    const sales = await this.getSales(departmentId);
+    const purchases = await this.getPurchases(departmentId);
+
+    // Filter by date range if provided
+    const filterByDate = (items: any[]) => {
+      if (!startDate || !endDate) return items;
+      return items.filter(item => {
+        const itemDate = new Date(item.createdAt);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    };
+
+    const filteredSales = filterByDate(sales);
+    const filteredPurchases = filterByDate(purchases);
+
+    // Get unique dates from both sales and purchases
+    const dates = new Set([
+      ...filteredSales.map(sale => new Date(sale.createdAt).toISOString().split('T')[0]),
+      ...filteredPurchases.map(purchase => new Date(purchase.createdAt).toISOString().split('T')[0])
+    ]);
+
+    // Sort dates
+    const sortedDates = Array.from(dates).sort();
+
+    // Aggregate data by date
+    const salesByDate = new Map();
+    const purchasesByDate = new Map();
+
+    filteredSales.forEach(sale => {
+      const date = new Date(sale.createdAt).toISOString().split('T')[0];
+      salesByDate.set(date, (salesByDate.get(date) || 0) + Number(sale.totalPrice));
+    });
+
+    filteredPurchases.forEach(purchase => {
+      const date = new Date(purchase.createdAt).toISOString().split('T')[0];
+      purchasesByDate.set(date, (purchasesByDate.get(date) || 0) + Number(purchase.totalCost));
+    });
+
+    // Format data for chart
+    const labels = sortedDates.map(date => format(new Date(date), 'MMM dd'));
+    const salesData = sortedDates.map(date => salesByDate.get(date) || 0);
+    const purchasesData = sortedDates.map(date => purchasesByDate.get(date) || 0);
+
+    return {
+      labels,
+      sales: salesData,
+      purchases: purchasesData,
     };
   }
 }

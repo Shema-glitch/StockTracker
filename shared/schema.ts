@@ -6,6 +6,7 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
   password: text("password").notNull(),
   name: text("name").notNull(),
   role: text("role").notNull(), // 'admin' or 'employee'
@@ -27,6 +28,7 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   code: text("code").notNull().unique(), // Dynamic code like PHC, CAM, WIG
   departmentId: integer("department_id").references(() => departments.id),
+  parentId: integer("parent_id").references(() => categories.id),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -99,6 +101,13 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
   department: one(departments, {
     fields: [categories.departmentId],
     references: [departments.id],
+  }),
+  parent: one(categories, {
+    fields: [categories.parentId],
+    references: [categories.id],
+  }),
+  children: many(categories, {
+    relationName: "parent",
   }),
   products: many(products),
 }));

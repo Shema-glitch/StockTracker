@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/lib/auth";
-import { Box } from "lucide-react";
+import { Box, Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -28,6 +29,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
     },
   });
@@ -68,12 +70,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Card className="w-full max-w-md mx-4 bounce-in shadow-2xl border-0">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 animate-gradient">
+      <Card className="w-full max-w-md mx-4 shadow-2xl border-0 transition-all duration-300 hover:shadow-blue-100/50 animate-fade-in-up">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Box className="text-white text-xl animate-pulse" />
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg transition-transform duration-300 hover:scale-105">
+              <Box className="text-white text-xl" />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -92,7 +94,30 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
+                      <Input 
+                        placeholder="Enter your username" 
+                        {...field} 
+                        className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="email"
+                        placeholder="Enter your email" 
+                        {...field}
+                        className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -106,7 +131,12 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Enter your password" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="Enter your password" 
+                        {...field}
+                        className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,10 +145,17 @@ export default function Login() {
               
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20" 
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
           </Form>

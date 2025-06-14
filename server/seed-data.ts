@@ -9,6 +9,7 @@ async function seedData() {
     if (!adminUser) {
       adminUser = await storage.createUser({
         username: "admin",
+        email: "admin@tristatelabs.com",
         password: "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "admin123"
         name: "Admin User",
         role: "admin",
@@ -18,6 +19,23 @@ async function seedData() {
       console.log("Created admin user:", adminUser.username);
     } else {
       console.log("Admin user already exists:", adminUser.username);
+    }
+
+    // Create a test employee user
+    let employeeUser = await storage.getUserByUsername("employee");
+    if (!employeeUser) {
+      employeeUser = await storage.createUser({
+        username: "employee",
+        email: "employee@tristatelabs.com",
+        password: "$2b$10$8K1p/a0drtNNiVQY3Yr2VO.nTJRdcT0h8qJ8HdO8VYO1O.nC4P8vG", // password: "employee123"
+        name: "Test Employee",
+        role: "employee",
+        permissions: ["view", "create", "edit"],
+        isActive: true
+      });
+      console.log("Created employee user:", employeeUser.username);
+    } else {
+      console.log("Employee user already exists:", employeeUser.username);
     }
 
     // Create departments

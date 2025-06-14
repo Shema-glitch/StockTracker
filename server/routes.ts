@@ -314,6 +314,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Dashboard chart data
+  app.get("/api/dashboard/chart", authenticateToken, async (req, res) => {
+    try {
+      const departmentId = req.query.departmentId ? Number(req.query.departmentId) : undefined;
+      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
+      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
+      const chartData = await storage.getDashboardChartData(departmentId, startDate, endDate);
+      res.json(chartData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch dashboard chart data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

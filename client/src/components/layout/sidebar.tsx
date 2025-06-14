@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { 
   LayoutDashboard, Package, Tags, ShoppingCart, 
   DollarSign, ArrowUpDown, BarChart3, Users, 
-  Box, Settings 
+  Box, Settings, LogOut
 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,7 @@ export function Sidebar() {
             <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
           </div>
           <Button variant="ghost" size="sm" onClick={logout}>
-            <Settings className="w-4 h-4" />
+            <LogOut className="w-4 h-4" />
           </Button>
         </div>
       </div>

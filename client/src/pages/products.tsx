@@ -16,6 +16,7 @@ import {
 import { ProductModal } from "@/components/modals/product-modal";
 import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { Plus, Package, Search, AlertTriangle } from "lucide-react";
+import { RefreshNotice } from "@/components/ui/refresh-notice";
 
 export default function Products() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -29,9 +30,12 @@ export default function Products() {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products", selectedDepartmentId],
     queryFn: async () => {
+      const headers = getAuthHeader();
+      if (!headers?.Authorization) return [];
+
       const response = await fetch(`/api/products?departmentId=${selectedDepartmentId}`, {
         headers: {
-          ...getAuthHeader(),
+          Authorization: headers.Authorization,
         },
       });
       if (!response.ok) {
@@ -64,6 +68,9 @@ export default function Products() {
             Add Product
           </Button>
         </div>
+
+        {/* Refresh Notice */}
+        <RefreshNotice />
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -197,36 +204,20 @@ export default function Products() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="font-mono">
-                          {product.code || 'CODE001'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
-                      <TableCell>{product.price ? `${product.price.toLocaleString()} RWF` : 'N/A'}</TableCell>
+                      <TableCell>{product.code}</TableCell>
+                      <TableCell>{product.category?.name || "No Category"}</TableCell>
+                      <TableCell>{Number(product.price).toLocaleString()} RWF</TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <span>{product.stockQuantity || 0}</span>
+                          <span>{product.stockQuantity}</span>
                           {product.stockQuantity <= (product.minStockLevel || 0) && (
-                            <AlertTriangle className="h-4 w-4 text-red-500" />
+                            <Badge variant="destructive">Low Stock</Badge>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge 
-                          variant={
-                            product.stockQuantity <= (product.minStockLevel || 0) 
-                              ? "destructive" 
-                              : product.stockQuantity > 10 
-                                ? "default" 
-                                : "secondary"
-                          }
-                        >
-                          {product.stockQuantity <= (product.minStockLevel || 0) 
-                            ? "Low Stock" 
-                            : product.stockQuantity > 10 
-                              ? "In Stock" 
-                              : "Limited"}
+                        <Badge variant={product.isActive ? "default" : "secondary"}>
+                          {product.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
                     </TableRow>
@@ -237,30 +228,16 @@ export default function Products() {
           </Card>
         ) : (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Package className="h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {searchTerm ? "No products found" : "No products yet"}
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                {searchTerm 
-                  ? "Try adjusting your search terms"
-                  : "Start by adding your first product to the inventory"
-                }
-              </p>
-              <Button onClick={() => setModalOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Product
-              </Button>
+            <CardContent className="p-6">
+              <div className="text-center text-muted-foreground">
+                No products found. Add your first product to get started.
+              </div>
             </CardContent>
           </Card>
         )}
-
-        <ProductModal 
-          open={modalOpen} 
-          onOpenChange={setModalOpen} 
-        />
       </div>
+
+      <ProductModal open={modalOpen} onOpenChange={setModalOpen} />
     </MainLayout>
   );
 }

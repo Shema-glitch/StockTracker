@@ -5,11 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CategoryModal } from "@/components/modals/category-modal";
+import { CategoryProductsModal } from "@/components/modals/category-products-modal";
 import { useAuthStore, getAuthHeader } from "@/lib/auth";
 import { Plus, Tag } from "lucide-react";
 
 export default function Categories() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<{ id: string; name: string; code: string; } | null>(null);
+  const [productsModalOpen, setProductsModalOpen] = useState(false);
   const { selectedDepartmentId } = useAuthStore();
 
   const breadcrumbs = [
@@ -51,8 +54,16 @@ export default function Categories() {
   });
 
   const totalProducts = products.length;
-  const mainCategories = categories.filter((cat: any) => !cat.parentId);
-  const subCategories = categories.filter((cat: any) => cat.parentId);
+  const totalCategories = categories.length;
+
+  const getProductCount = (categoryId: string) => {
+    return products.filter((product: any) => product.categoryId === categoryId).length;
+  };
+
+  const handleCategoryClick = (category: any) => {
+    setSelectedCategory(category);
+    setProductsModalOpen(true);
+  };
 
   return (
     <MainLayout title="Categories" breadcrumbs={breadcrumbs}>
@@ -62,7 +73,7 @@ export default function Categories() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
             <p className="text-muted-foreground">
-              Organize your products with categories and sub-categories
+              Organize your products with categories
             </p>
           </div>
           <Button onClick={() => setModalOpen(true)} className="bg-blue-600 hover:bg-blue-700">
@@ -72,30 +83,16 @@ export default function Categories() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="hover:shadow-md transition-shadow duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Main Categories</p>
-                  <p className="text-2xl font-bold">{mainCategories.length}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Categories</p>
+                  <p className="text-2xl font-bold">{totalCategories}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Tag className="h-6 w-6 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-shadow duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Sub-Categories</p>
-                  <p className="text-2xl font-bold">{subCategories.length}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Tag className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </CardContent>
@@ -146,26 +143,34 @@ export default function Categories() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category: any) => (
-              <Card key={category.id} className="metric-card">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-semibold">{category.name}</CardTitle>
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Tag className="h-4 w-4 text-blue-600" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">
-                      {category.productCount || 0} products
-                    </p>
-                    <Badge variant="secondary">
-                      {category.code || 'CODE'}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {categories.map((category: any) => {
+              const productCount = getProductCount(category.id);
+              
+              return (
+                <Card 
+                  key={category.id}
+                  className="metric-card cursor-pointer hover:shadow-md transition-all duration-200"
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-lg font-semibold">{category.name}</CardTitle>
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Tag className="h-4 w-4 text-blue-600" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        {productCount} products
+                      </p>
+                      <Badge variant="secondary">
+                        {category.code || 'CODE'}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
 
             {categories.length === 0 && (
               <Card className="col-span-full">
@@ -188,6 +193,12 @@ export default function Categories() {
         <CategoryModal 
           open={modalOpen} 
           onOpenChange={setModalOpen} 
+        />
+
+        <CategoryProductsModal
+          open={productsModalOpen}
+          onOpenChange={setProductsModalOpen}
+          category={selectedCategory}
         />
       </div>
     </MainLayout>
